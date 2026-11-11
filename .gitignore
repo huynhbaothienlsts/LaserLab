@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.pnpm-store/
+.agents/
+.codex/
+.repo-git/
+*.pdf
+*.docx
+Ke hoach 2026-2027/
+Cat laser/
+playwright-report/
+test-results/

@@ -1,0 +1,4 @@
+export type Question={id:string,type:'single'|'multi'|'truefalse'|'sequence';prompt:string;options:string[];answer:string[];explanation:string;hint:string};
+export type Lesson={id:number,title:string,short:string,badge:string,color:string,hook:string,kud:{know:string[];understand:string[];do:string[]};cards:{title:string,body:string,example:string}[];activity:{title:string,instruction:string,items:string[],correct:string[],feedback:string};practice:{title:string,goal:string,steps:string[],product:string,checklist:string[],formats:string};questions:Question[]};
+export type LessonProgress={status:'available'|'in-progress'|'completed';completedAt?:string;bestScore:number;attempts:number;activitiesCompleted:string[];sectionsViewed:string[]};
+export type AppData={schemaVersion:1;student:{fullName:string;className:string}|null;lessons:Record<string,LessonProgress>;course:{completed:boolean;completedAt:string|null};theme:'light'|'dark'};

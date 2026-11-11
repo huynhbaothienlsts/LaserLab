@@ -1,0 +1,1 @@
+export const siteConfig={school:'Trường THCS và THPT Đinh Thiện Lý',year:'2026–2027',passScore:80,classes:Array.from({length:10},(_,i)=>`9H${String(i+1).padStart(2,'0')}`),storageKey:'laser-lab-progress-v1'};

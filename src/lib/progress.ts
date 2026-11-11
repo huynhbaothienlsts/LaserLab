@@ -1,0 +1,10 @@
+import type {AppData,LessonProgress} from '../types';import {siteConfig} from '../config/siteConfig';
+export const freshData=():AppData=>({schemaVersion:1,student:null,lessons:{},course:{completed:false,completedAt:null},theme:'light'});
+export const defaultLesson=():LessonProgress=>({status:'available',bestScore:0,attempts:0,activitiesCompleted:[],sectionsViewed:[]});
+export const statusFor=(data:AppData,id:number)=>data.lessons[`lesson-${id}`]?.status??(id===1?'available':data.lessons[`lesson-${id-1}`]?.status==='completed'?'available':'available');
+export const isUnlocked=(data:AppData,id:number)=>id===1||data.lessons[`lesson-${id-1}`]?.status==='completed';
+export const scoreAnswers=(answers:Record<string,string[]>,keys:{id:string;answer:string[]}[])=>Math.round(keys.filter(k=>{const a=[...(answers[k.id]||[])].sort();const b=[...k.answer].sort();return JSON.stringify(a)===JSON.stringify(b)}).length/keys.length*100);
+export const completeLesson=(data:AppData,id:number,score:number,activity:boolean,sections:number):AppData=>{const key=`lesson-${id}`,old=data.lessons[key]||defaultLesson(),passed=score>=siteConfig.passScore&&activity&&sections>=5;const now=new Date().toISOString();const lessons={...data.lessons,[key]:{...old,status:passed?'completed':'in-progress',completedAt:old.completedAt||(passed?now:undefined),bestScore:Math.max(old.bestScore,score),attempts:old.attempts+1}};const all=Array.from({length:8},(_,i)=>lessons[`lesson-${i+1}`]?.status==='completed').every(Boolean);return {...data,lessons,course:{completed:all,completedAt:data.course.completedAt||(all?now:null)}}};
+export const save=(d:AppData)=>{try{localStorage.setItem(siteConfig.storageKey,JSON.stringify(d));return true}catch{return false}};
+export const load=():AppData=>{try{const x=JSON.parse(localStorage.getItem(siteConfig.storageKey)||'null');return x?.schemaVersion===1?x:freshData()}catch{return freshData()}};
+export const validImport=(x:unknown):x is AppData=>!!x&&typeof x==='object'&&(x as AppData).schemaVersion===1&&('student'in x)&&('lessons'in x)&&('course'in x);
